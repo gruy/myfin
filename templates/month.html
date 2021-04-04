@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+
+{% load i18n %}
+{% load static %}
+
+
+{% block extra_css %}
+    {{ block.super }}
+    {{ form.media.css }}
+    <link rel="stylesheet" href="{% static 'css/select2-bootstrap4.min.css' %}">
+{% endblock %}
+
+
+{% block extra_js %}
+    {{ block.super }}
+    {{ form.media.js }}
+{% endblock %}
+
+
+{% block title %} - {{ month }}.{{ year }}{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-10">
+                <table class="table">
+                    <tr>
+                        <td colspan="5" class="text-danger text-right"><b>{% trans 'Total' %}: {{ sum|floatformat:2 }}</b></td>
+                    </tr>
+                    {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction.date }}</td>
+                            <td title="{{ transaction.comment }}">{{ transaction.category.name }}</td>
+                            <td>{{ transaction.quantity }} {{ transaction.get_unit_display }}</td>
+                            <td class="text-right">{{ transaction.price|default:'' }}</td>
+                            <td class="text-success text-right"><b>{{ transaction.amount }}</b></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
