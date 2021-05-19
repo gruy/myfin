@@ -12,4 +12,5 @@ class TransactionForm(BS4ModelForm):
         model = Transaction
         widgets = {
             'category': Select2Widget,
+            'comment': forms.Textarea(attrs={'rows': 5}),
         }

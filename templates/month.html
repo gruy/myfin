@@ -25,20 +25,31 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-10">
-                <table class="table">
-                    <tr>
-                        <td colspan="5" class="text-danger text-right"><b>{% trans 'Total' %}: {{ sum|floatformat:2 }}</b></td>
-                    </tr>
-                    {% for transaction in transactions %}
-                        <tr>
-                            <td>{{ transaction.date }}</td>
-                            <td title="{{ transaction.comment }}">{{ transaction.category.name }}</td>
-                            <td>{{ transaction.quantity }} {{ transaction.get_unit_display }}</td>
-                            <td class="text-right">{{ transaction.price|default:'' }}</td>
-                            <td class="text-success text-right"><b>{{ transaction.amount }}</b></td>
-                        </tr>
-                    {% endfor %}
-                </table>
+                <div class="table-responsive-sm">
+                    <table class="table mt-4">
+                        <thead>
+                            <th scope="col">{% trans 'Date' %}</th>
+                            <th scope="col">{% trans 'Category' %}</th>
+                            <th scope="col">{% trans 'Quantity' %}</th>
+                            <th scope="col" class="text-right">{% trans 'Price' %}</th>
+                            <th scope="col" class="text-right">{% trans 'Amount' %}</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="text-danger text-right"><b>{% trans 'Total' %}: {{ sum|floatformat:2 }}</b></td>
+                            </tr>
+                            {% for transaction in transactions %}
+                                <tr>
+                                    <td scope="row">{{ transaction.date }}</td>
+                                    <td title="{{ transaction.comment }}">{{ transaction.category.name }}</td>
+                                    <td>{{ transaction.quantity }} {{ transaction.get_unit_display }}</td>
+                                    <td class="text-right">{{ transaction.price|default:'' }}</td>
+                                    <td class="text-success text-right"><b>{{ transaction.amount }}</b></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

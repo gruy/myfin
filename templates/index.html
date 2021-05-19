@@ -22,51 +22,55 @@
     <div class="container">
         <form method="post" action="{% url 'index' %}">
             {% csrf_token %}
-            <div class="form-group">
-                <div class="row justify-content-center">
+            <div class="row justify-content-center">
 
-                    <div class="col-6">
-                        <div class="row">
-                            <div class="col-4">
+                <div class="col-12 col-lg-6">
+                    <div class="row justify-content-end">
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="form-group">
                                 {{ form.date.label_tag }}{{ form.date }}{{ form.date.errors }}
                             </div>
-                            <div class="col-8">
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-8">
+                            <div class="form-group">
                                 {{ form.category.label_tag }}{{ form.category }}{{ form.category.errors }}
                             </div>
                         </div>
-
-                        <div class="row mt-4">
-                            <div class="col-4">
+                        <div class="col-6 col-lg-4">
+                            <div class="form-group">
                                 {{ form.quantity.label_tag }}{{ form.quantity }}{{ form.quantity.errors }}
                             </div>
-                            <div class="col-4">
+                        </div>
+                        <div class="col-6 col-lg-4">
+                            <div class="form-group">
                                 {{ form.unit.label_tag }}{{ form.unit }}{{ form.unit.errors }}
                             </div>
-                            <div class="col-4">
+                        </div>
+                        <div class="col-6 col-lg-4">
+                            <div class="form-group">
                                 {{ form.price.label_tag }}{{ form.price }}{{ form.price.errors }}
                             </div>
                         </div>
-
-                        <div class="row mt-4">
-                            <div class="col-6 offset-3">
+                        <div class="col-6 col-lg-4">
+                            <div class="form-group">
                                 {{ form.amount.label_tag }}{{ form.amount }}{{ form.amount.errors }}
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="col-6">
-                        <div class="row">
-                            <div class="col-12">
-                                {{ form.comment.label_tag }}{{ form.comment }}{{ form.amount.comment }}
-                            </div>
-                        </div>
+                <div class="col-12 col-lg-6">
+                    <div class="form-group">
+                        {{ form.comment.label_tag }}{{ form.comment }}{{ form.amount.comment }}
                     </div>
+                </div>
 
-                    <div class="col-3 mt-4">
+                <div class="col-12 col-lg-4">
+                    <div class="mt-2 mb-5">
                         <button class="btn btn-primary btn-block" type="submit">{% trans 'Save' %}</button>
                     </div>
-
                 </div>
+
             </div>
         </form>
     </div>

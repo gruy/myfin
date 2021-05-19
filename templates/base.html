@@ -18,10 +18,10 @@
     
     <body>
         {% if user.is_authenticated %}
-            <div class="container mb-4">
+            <div class="container">
                 <div class="row">
-                    <div class="col-12 text-right">
-                        <a href="{% url 'logout' %}">{% trans 'Logout' %}</a>
+                    <div class="col-12 text-right mt-2">
+                        <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">{% trans 'Logout' %}</a>
                     </div>
                 </div>
             </div>
