@@ -48,6 +48,7 @@ class MonthView(LoginRequiredMixin, ListView):
         ctx = super().get_context_data(**kwargs)
         ctx['month'] = self.month
         ctx['year'] = self.year
+        ctx['sum'] = self.object_list.aggregate(sum=Sum('amount'))['sum']
         return ctx
 
     def get_queryset(self):
