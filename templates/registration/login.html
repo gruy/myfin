@@ -10,6 +10,9 @@
         body,html{
             height: 100%;
         }
+        input {
+            width: 100%;
+        }
     </style>
 {% endblock %}
 
@@ -17,7 +20,7 @@
 {% block content %}
     <div class="container h-100">
         <div class="row h-100 justify-content-center align-items-center">
-            <div class="col-5">
+            <div class="col-12 col-lg-5">
                 <div class="card">
                     <div class="card-body">
                         {% if form.errors %}
@@ -25,16 +28,24 @@
                         {% endif %}
                         <form method="post" action="{% url 'login' %}">
                             {% csrf_token %}
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td>{{ form.username.label_tag }}</td>
-                                    <td>{{ form.username }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ form.password.label_tag }}</td>
-                                    <td>{{ form.password }}</td>
-                                </tr>
-                            </table>
+                            <div class="row">
+                                <div class="col-12">
+                                    {{ form.username.label_tag }}
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        {{ form.username }}
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    {{ form.password.label_tag }}
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        {{ form.password }}
+                                    </div>
+                                </div>
+                            </div>
                             <button type="submit" class="btn btn-primary btn-block mt-3">{% trans 'Login' %}</button>
                             <input type="hidden" name="next" value="{{ next }}">
                         </form>
