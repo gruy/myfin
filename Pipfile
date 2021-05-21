@@ -9,6 +9,7 @@ django-select2 = "*"
 django-treebeard = "*"
 environs = "*"
 dj-database-url = "*"
+gunicorn = "*"
 
 [dev-packages]
 
