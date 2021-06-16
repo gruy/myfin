@@ -42,6 +42,7 @@ class MonthRootView(LoginRequiredMixin, TemplateView):
         self.month = kwargs['month']
         self.year = kwargs['year']
         self.category = None
+        self.breadcrumbs = []
         category_id = kwargs.get('category_id', None)
 
         if category_id:
@@ -54,6 +55,12 @@ class MonthRootView(LoginRequiredMixin, TemplateView):
             self.transactions = Transaction.objects.filter(category__in=categories, date__year=self.year, date__month=self.month)
             self.category.amount = Transaction.objects.filter(category=self.category, date__year=self.year, date__month=self.month).aggregate(sum=Sum('amount'))['sum']
             roots = self.category.get_children()
+            self.breadcrumbs.append(self.category)
+            _parent = self.category.get_parent()
+            while _parent:
+                self.breadcrumbs.append(_parent)
+                _parent = _parent.get_parent()
+            self.breadcrumbs.reverse()
         else:
             self.transactions = Transaction.objects.filter(date__year=self.year, date__month=self.month)
             roots = Category.get_root_nodes()
@@ -78,6 +85,7 @@ class MonthRootView(LoginRequiredMixin, TemplateView):
         ctx['sum'] = self.transactions.aggregate(sum=Sum('amount'))['sum']
         ctx['result'] = self.result
         ctx['category'] = self.category
+        ctx['breadcrumbs'] = self.breadcrumbs
         return ctx
 
 
@@ -91,11 +99,18 @@ class MonthDetailView(LoginRequiredMixin, ListView):
         self.year = kwargs['year']
         self.category = None
         category_id = kwargs.get('category_id', None)
+        self.breadcrumbs = []
         if category_id:
             try:
                 self.category = Category.objects.get(id=category_id)
             except Category.DoesNotExist:
                 raise Http404
+            self.breadcrumbs.append(self.category)
+            _parent = self.category.get_parent()
+            while _parent:
+                self.breadcrumbs.append(_parent)
+                _parent = _parent.get_parent()
+            self.breadcrumbs.reverse()
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -104,6 +119,7 @@ class MonthDetailView(LoginRequiredMixin, ListView):
         ctx['year'] = self.year
         ctx['sum'] = self.object_list.aggregate(sum=Sum('amount'))['sum']
         ctx['category'] = self.category
+        ctx['breadcrumbs'] = self.breadcrumbs
         return ctx
 
     def get_queryset(self):
