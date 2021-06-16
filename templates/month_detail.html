@@ -30,7 +30,7 @@
                         <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
                         <li class="breadcrumb-item"><b><a href="{% url 'month-root' year month %}">{{ month }}.{{ year }}</a></b></li>
                         {% for item in breadcrumbs %}
-                            {% if not forloop.last %}
+                            {% if not forloop.last or not item.is_leaf %}
                                 <li class="breadcrumb-item"><a href="{% url 'month-root-detail' year month item.id %}">{{ item.name }}</a></li>
                             {% else %}
                                 <li class="breadcrumb-item active">{{ item.name }}</li>

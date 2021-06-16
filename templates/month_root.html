@@ -44,9 +44,9 @@
                             <tr>
                                 <td colspan="5" class="text-danger text-right"><b>{% trans 'Total' %}: {{ sum|floatformat:2 }}</b></td>
                             </tr>
-                            {% if category %}
+                            {% if category and category.amount %}
                                 <tr>
-                                    <td>{% trans 'In the category itself' %}</td>
+                                    <td><a href="{% url 'month-detail-category' year month category.id %}">{% trans 'In the category itself' %}</a></td>
                                     <td class="text-success text-right"><b>{{ category.amount|floatformat:2 }}</b></td>
                                 </tr>
                             {% endif %}
