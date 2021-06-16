@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+
+{% load i18n %}
+{% load static %}
+
+
+{% block extra_css %}
+    {{ block.super }}
+    {{ form.media.css }}
+    <link rel="stylesheet" href="{% static 'css/select2-bootstrap4.min.css' %}">
+{% endblock %}
+
+
+{% block extra_js %}
+    {{ block.super }}
+    {{ form.media.js }}
+{% endblock %}
+
+
+{% block title %} - {{ month }}.{{ year }}{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-10">
+                <div class="table-responsive-sm">
+                    <table class="table mt-4">
+                        <thead>
+                            <th scope="col">
+                                {% trans 'Category' %} «{{ category.name|default:'Roots' }}». {% trans 'Month' %} {{ month }}.{{ year }}
+                            </th>
+                            <th scope="col" class="text-right">{% trans 'Amount' %}</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="text-danger text-right"><b>{% trans 'Total' %}: {{ sum|floatformat:2 }}</b></td>
+                            </tr>
+                            {% if category %}
+                                <tr>
+                                    <td>{% trans 'In the category itself' %}</td>
+                                    <td class="text-success text-right"><b>{{ category.amount|floatformat:2 }}</b></td>
+                                </tr>
+                            {% endif %}
+                            {% for item in result %}
+                                <tr>
+                                    <td>
+                                        {% if not item.category.is_leaf %}
+                                            <a href="{% url 'month-root-detail' year month item.category.id %}">{{ item.category.name }}</a>
+                                        {% else %}
+                                            <a href="{% url 'month-detail-category' year month item.category.id %}">{{ item.category.name }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-success text-right"><b>{{ item.amount|floatformat:2 }}</b></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

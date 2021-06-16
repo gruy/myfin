@@ -84,7 +84,7 @@
                     </tr>
                     {% for item in by_months %}
                         <tr>
-                            <td><a href="{% url 'month' item.month.year item.month.month %}">{{ item.month|date:'Y F' }}</a></td>
+                            <td><a href="{% url 'month-root' item.month.year item.month.month %}">{{ item.month|date:'Y F' }}</a></td>
                             <td class="text-success text-right"><b>{{ item.amount|floatformat:2 }}</b></td>
                         </tr>
                     {% endfor %}

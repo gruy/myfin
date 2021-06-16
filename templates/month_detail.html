@@ -41,7 +41,7 @@
                             {% for transaction in transactions %}
                                 <tr>
                                     <td scope="row">{{ transaction.date }}</td>
-                                    <td title="{{ transaction.comment }}">{{ transaction.category.name }}</td>
+                                    <td title="{{ transaction.comment }}">{{ transaction.category.name }}<br /><small class="text-muted">{{ transaction.comment }}</small></td>
                                     <td>{{ transaction.quantity }} {{ transaction.get_unit_display }}</td>
                                     <td class="text-right">{{ transaction.price|floatformat:2|default:'' }}</td>
                                     <td class="text-success text-right"><b>{{ transaction.amount|floatformat:2 }}</b></td>

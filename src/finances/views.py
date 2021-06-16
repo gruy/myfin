@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth
+from django.http import Http404
 from django.shortcuts import render
 from django.views.generic import CreateView, ListView, TemplateView
 from django.urls import reverse_lazy
@@ -34,14 +35,67 @@ class IndexView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class MonthView(LoginRequiredMixin, ListView):
-    context_object_name = 'transactions'
-    model = Transaction
-    template_name = 'month.html'
+class MonthRootView(LoginRequiredMixin, TemplateView):
+    template_name = 'month_root.html'
 
     def get(self, request, *args, **kwargs):
         self.month = kwargs['month']
         self.year = kwargs['year']
+        self.category = None
+        category_id = kwargs.get('category_id', None)
+
+        if category_id:
+            try:
+                self.category = Category.objects.get(id=category_id)
+            except Category.DoesNotExist:
+                raise Http404
+            categories = list(self.category.get_descendants())
+            categories.append(self.category)
+            self.transactions = Transaction.objects.filter(category__in=categories, date__year=self.year, date__month=self.month)
+            self.category.amount = Transaction.objects.filter(category=self.category, date__year=self.year, date__month=self.month).aggregate(sum=Sum('amount'))['sum']
+            roots = self.category.get_children()
+        else:
+            self.transactions = Transaction.objects.filter(date__year=self.year, date__month=self.month)
+            roots = Category.get_root_nodes()
+
+        self.result = []
+        for root in roots:
+            categories = list(root.get_descendants())
+            categories.append(root)
+            amount = self.transactions.filter(category__in=categories).aggregate(sum=Sum('amount'))['sum']
+            if amount:
+                self.result.append({
+                    'category': root,
+                    'amount': amount,
+                })
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['month'] = self.month
+        ctx['year'] = self.year
+        ctx['sum'] = self.transactions.aggregate(sum=Sum('amount'))['sum']
+        ctx['result'] = self.result
+        ctx['category'] = self.category
+        return ctx
+
+
+class MonthDetailView(LoginRequiredMixin, ListView):
+    context_object_name = 'transactions'
+    model = Transaction
+    template_name = 'month_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        self.month = kwargs['month']
+        self.year = kwargs['year']
+        self.category = None
+        category_id = kwargs.get('category_id', None)
+        if category_id:
+            try:
+                self.category = Category.objects.get(id=category_id)
+            except Category.DoesNotExist:
+                raise Http404
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -49,8 +103,13 @@ class MonthView(LoginRequiredMixin, ListView):
         ctx['month'] = self.month
         ctx['year'] = self.year
         ctx['sum'] = self.object_list.aggregate(sum=Sum('amount'))['sum']
+        ctx['category'] = self.category
         return ctx
 
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(date__year=self.year, date__month=self.month)
+        if self.category:
+            qs = qs.filter(category=self.category, date__year=self.year, date__month=self.month)
+        else:
+            qs = qs.filter(date__year=self.year, date__month=self.month)
+        return qs
